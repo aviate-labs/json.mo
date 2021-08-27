@@ -1,4 +1,4 @@
-import L "../../parser-combinators.mo/src/List";
+import L "mo:parser-combinators/List";
 
 import JSON "../src/JSON";
 

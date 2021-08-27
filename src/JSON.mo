@@ -4,9 +4,9 @@ import Iter "mo:base/Iter";
 import List "mo:base/List";
 import Text "mo:base/Text";
 
-import C "../../parser-combinators.mo/src/Combinators";
-import L "../../parser-combinators.mo/src/List";
-import P "../../parser-combinators.mo/src/Parser";
+import C "mo:parser-combinators/Combinators";
+import L "mo:parser-combinators/List";
+import P "mo:parser-combinators/Parser";
 
 module JSON {
     public type JSON = {

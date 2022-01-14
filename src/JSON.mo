@@ -3,6 +3,7 @@ import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
 import List "mo:base/List";
 import Text "mo:base/Text";
+import Int "mo:base/Int";
 
 import C "mo:parser-combinators/Combinators";
 import L "mo:parser-combinators/List";
@@ -20,7 +21,7 @@ module JSON {
 
     public func show(json : JSON) : Text {
         switch (json) {
-            case (#Number(v)) { debug_show(v); };
+            case (#Number(v)) { Int.toText(v); }; // debub_show returns "+" symbol
             case (#String(v)) { "\"" # v # "\""; };
             case (#Array(v)) {
                 var s = "[";
@@ -33,7 +34,7 @@ module JSON {
             case (#Object(v)) {
                 var s = "{";
                 for ((k, v) in v.entries()) {
-                     if (s != "{") { s #= ", "; }; // avoid the first element
+                    if (s != "{") { s #= ", "; }; // avoid the first element
                     s #= "\"" # k # "\"" # ": " # show(v);
                 };
                 s # "}";

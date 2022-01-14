@@ -21,7 +21,7 @@ module JSON {
     public func show(json : JSON) : Text {
         switch (json) {
             case (#Number(v)) { debug_show(v); };
-            case (#String(v)) { v; };
+            case (#String(v)) { "\"" # v # "\""; };
             case (#Array(v)) {
                 var s = "[";
                 for (i in v.vals()) {
@@ -33,8 +33,8 @@ module JSON {
             case (#Object(v)) {
                 var s = "{";
                 for ((k, v) in v.entries()) {
-                    if (s != "") { s #= "; "; };
-                    s #= k # ": " # show(v);
+                     if (s != "{") { s #= ", "; }; // avoid the first element
+                    s #= "\"" # k # "\"" # ": " # show(v);
                 };
                 s # "}";
             };

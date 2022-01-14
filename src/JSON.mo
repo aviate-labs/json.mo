@@ -21,7 +21,7 @@ module JSON {
 
     public func show(json : JSON) : Text {
         switch (json) {
-            case (#Number(v)) { Int.toText(v); }; // debub_show returns "+" symbol
+            case (#Number(v)) { Int.toText(v); }; // debug_show returns "+" symbol
             case (#String(v)) { "\"" # v # "\""; };
             case (#Array(v)) {
                 var s = "[";

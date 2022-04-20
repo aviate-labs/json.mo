@@ -26,7 +26,7 @@ module JSON {
             case (#Array(v)) {
                 var s = "[";
                 for (i in v.vals()) {
-                    if (s != "") { s #= ", "; };
+                    if (s != "[") { s #= ", "; };
                     s #= show(i);
                 };
                 s # "]";

@@ -1,11 +1,6 @@
-# JSON
+// import JSON "mo:json/JSON";
+import JSON "../src/JSON";
 
-[JSON](https://www.json.org/)
-
-## Example
-
-```motoko
-import JSON "mo:json/JSON";
 import Debug "mo:base/Debug";
 
 let objMap : JSON.ObjectMap = JSON.emptyObjectMap();
@@ -25,4 +20,3 @@ objMap.put("name", #Object(name));
 
 Debug.print(JSON.show(obj));
 // {"name": {"firstName": "quint"}, "username": "di-wu"}
-```

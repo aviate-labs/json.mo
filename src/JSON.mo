@@ -10,11 +10,17 @@ import L "mo:parser-combinators/List";
 import P "mo:parser-combinators/Parser";
 
 module JSON {
+    public type ObjectMap = HashMap.HashMap<Text, JSON>;
+
+    public func emptyObjectMap() : ObjectMap {
+        HashMap.HashMap(0, Text.equal, Text.hash);
+    };
+
     public type JSON = {
         #Number : Int; // TODO: float
         #String : Text;
         #Array : [JSON];
-        #Object : HashMap.HashMap<Text,JSON>;
+        #Object : HashMap.HashMap<Text, JSON>;
         #Boolean : Bool;
         #Null;
     };

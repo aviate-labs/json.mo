@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "test": "$(vessel bin)/moc -r $(vessel sources) example.mo"
+    }
+}

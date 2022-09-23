@@ -1,8 +1,6 @@
 import JSON "../src/JSON";
 
-let p = JSON.Parser();
-
-switch (p.parse("{ }")) {
+switch (JSON.parse("{ }")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -14,20 +12,15 @@ switch (p.parse("{ }")) {
     };
 };
 
-switch (p.parse("{ \"v\": 1 }")) {
+switch (JSON.parse("{ \"v\": 1 }")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
             case (#Object(v)) {
                 assert(v.size() == 1);
-                switch (v.get("v")) {
-                    case(? v) {
-                        switch (v) {
-                            case (#Number(v)) {
-                                assert(v == 1);
-                            };
-                            case (_) { assert(false); };
-                        };
+                switch (v[0]) {
+                    case (("v", #Number(v))) {
+                        assert(v == 1);
                     };
                     case (_) { assert(false); };
                 };
@@ -37,7 +30,7 @@ switch (p.parse("{ \"v\": 1 }")) {
     };
 };
 
-switch (p.parse("[  ]")) {
+switch (JSON.parse("[  ]")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -49,7 +42,7 @@ switch (p.parse("[  ]")) {
     };
 };
 
-switch (p.parse("[1, \"txt\"]")) {
+switch (JSON.parse("[1, \"txt\"]")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -69,7 +62,7 @@ switch (p.parse("[1, \"txt\"]")) {
     };
 };
 
-switch (p.parse("\"\\\"quoted\\\"\"")) {
+switch (JSON.parse("\"\\\"quoted\\\"\"")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -81,7 +74,7 @@ switch (p.parse("\"\\\"quoted\\\"\"")) {
     };
 };
 
-switch (p.parse("-100")) {
+switch (JSON.parse("-100")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -93,7 +86,7 @@ switch (p.parse("-100")) {
     };
 };
 
-switch (p.parse("true")) {
+switch (JSON.parse("true")) {
     case (null) { assert(false); };
     case (?v) {
         switch (v) {
@@ -105,7 +98,7 @@ switch (p.parse("true")) {
     };
 };
 
-switch (p.parse("   null")) { // Test with spaces.
+switch (JSON.parse("   null")) { // Test with spaces.
     case (null) { assert(false); };
     case (?v) {
         switch (v) {

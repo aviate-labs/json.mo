@@ -1,4 +1,4 @@
 {
   dependencies = [ "base", "parser-combinators" ],
-  compiler = Some "0.6.20"
+  compiler = Some "0.7.0"
 }

@@ -1,10 +1,6 @@
 import JSON "../src/JSON";
 
-import Debug "mo:base/Debug";
-
-let p = JSON.Parser();
-
-let v = switch (p.parse("[ 5, 1, 2, 4, 5, 6 ]")) {
+let v = switch (JSON.parse("[ 5, 1, 2, 4, 5, 6 ]")) {
     case (null) {
         assert(false);
         #Null;

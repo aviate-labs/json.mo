@@ -1,12 +1,12 @@
-let upstream = https://github.com/dfinity/vessel-package-set/releases/download/mo-0.6.7-20210818/package-set.dhall sha256:c4bd3b9ffaf6b48d21841545306d9f69b57e79ce3b1ac5e1f63b068ca4f89957
+let base = https://github.com/internet-computer/base-package-set/releases/download/moc-0.7.4/package-set.dhall sha256:3a20693fc597b96a8c7cf8645fda7a3534d13e5fbda28c00d01f0b7641efe494
 let Package = { name : Text, version : Text, repo : Text, dependencies : List Text }
 
 let additions = [
   { name = "parser-combinators"
   , repo = "https://github.com/aviate-labs/parser-combinators.mo"
-  , version = "v0.1.0"
-  , dependencies = ["base"]
+  , version = "v0.1.2"
+  , dependencies = [ "base-0.7.3" ] : List Text
   }
 ] : List Package
 
-in  upstream # additions
+in  base # additions

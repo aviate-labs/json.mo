@@ -1,5 +1,5 @@
 import JSON "../src/JSON";
-import Text "mo:base/Text";
+import Text "mo:base-0.7.3/Text";
 
 assert(JSON.show(#String("hello")) == "\"hello\"");
 assert(JSON.show(#Number(1)) == "1");

@@ -1,5 +1,0 @@
-{
-    "scripts": {
-        "test": "$(vessel bin)/moc -r $(vessel sources 2>/dev/null) example.mo"
-    }
-}

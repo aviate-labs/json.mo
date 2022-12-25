@@ -25,7 +25,7 @@ module JSON {
 
     public func show(json : JSON) : Text = switch (json) {
         case (#Number(v)) { Int.toText(v); };
-        case (#Float(v)) { Float.format(#fix 2, v); };
+        case (#Float(v)) { Float.format(#exact, v); };
         case (#String(v)) { "\"" # v # "\""; };
         case (#Array(v)) {
             var s = "[";
@@ -179,16 +179,6 @@ module JSON {
         }
     );
 
-    private func parseFloat() : P.Parser<Char, (Int, List.List<Char>)> {
-        C.seq<Char, Int, List.List<Char>>(
-            C.Int.int(),
-            C.right(
-                C.Character.char('.'),
-                C.many1(C.Character.digit()),
-            ),
-        );
-    };
-
     private func listToNat(list : List.List<Char>) : Nat {
         var n = 0;
 
@@ -200,22 +190,58 @@ module JSON {
     };
 
     private func floatParser() : P.Parser<Char, JSON> = C.map(
-        parseFloat(),
-        func((n, decimal_list) : (Int, List.List<Char>)) : JSON {
-            let n_of_decimals = Float.fromInt(List.size(decimal_list));
+        C.oneOf([
+            parseFloatWithExp(),
+            parseFloat(),
+        ]),
+        func(n : Float) : JSON = #Float(n),
+    );
 
-            let num = Float.fromInt(n);
-            let decimals = Float.fromInt(listToNat(decimal_list)) / (10 ** n_of_decimals);
+    private func parseFloat() : P.Parser<Char, Float> {
+        C.map(
+            C.seq<Char, Int, List.List<Char>>(
+                C.Int.int(),
+                C.right(
+                    C.Character.char('.'),
+                    C.many1(C.Character.digit()),
+                ),
+            ),
+            func((n, decimal_list) : (Int, List.List<Char>)) : Float {
+                let n_of_decimals = Float.fromInt(List.size(decimal_list));
 
-            let isNegative = num < 0;
+                let num = Float.fromInt(n);
+                let decimals = Float.fromInt(listToNat(decimal_list)) / (10 ** n_of_decimals);
 
-            let float = if (isNegative) {
-                num - decimals;
-            } else {
-                num + decimals;
-            };
+                let isNegative = num < 0;
 
-            #Float(float);
+                let float = if (isNegative) {
+                    num - decimals;
+                } else {
+                    num + decimals;
+                };
+
+                float;
+            },
+        );
+    };
+
+    private func parseFloatWithExp() : P.Parser<Char, Float> = C.map(
+        C.seq(
+            C.oneOf([
+                parseFloat(),
+                C.map(
+                    C.Int.int(),
+                    func(i : Int) : Float = Float.fromInt(i),
+                ),
+            ]),
+            C.right(
+                C.oneOf([C.String.string("e"), C.String.string("E")]),
+                C.Int.int(),
+            ),
+        ),
+        func((n, exponent) : (Float, Int)) : Float {
+            let exp = Float.fromInt(exponent);
+            n * (10 ** exp);
         },
     );
 

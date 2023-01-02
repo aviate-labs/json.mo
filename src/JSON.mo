@@ -25,7 +25,7 @@ module JSON {
 
     public func show(json : JSON) : Text = switch (json) {
         case (#Number(v)) { Int.toText(v); };
-        case (#Float(v)) { Float.format(#exact, v); };
+        case (#Float(v)) { Float.format(#fix(2), v); };
         case (#String(v)) { "\"" # v # "\""; };
         case (#Array(v)) {
             var s = "[";
@@ -179,16 +179,6 @@ module JSON {
         }
     );
 
-    private func listToNat(list : List.List<Char>) : Nat {
-        var n = 0;
-
-        for (c in Iter.fromList(list)) {
-            n := n * 10 + Nat32.toNat(Char.toNat32(c) - Char.toNat32('0'));
-        };
-
-        n;
-    };
-
     private func floatParser() : P.Parser<Char, JSON> = C.map(
         C.oneOf([
             parseFloatWithExp(),
@@ -207,20 +197,25 @@ module JSON {
                 ),
             ),
             func((n, decimal_list) : (Int, List.List<Char>)) : Float {
-                let n_of_decimals = Float.fromInt(List.size(decimal_list));
+                let isNegative = n < 0;
+                var num = n;
+                var n_of_decimals : Float = 0;
 
-                let num = Float.fromInt(n);
-                let decimals = Float.fromInt(listToNat(decimal_list)) / (10 ** n_of_decimals);
+                for (char in Iter.fromList(decimal_list)) {
+                    let digit = Nat32.toNat(
+                        Char.toNat32(char) - Char.toNat32('0')
+                    );
 
-                let isNegative = num < 0;
+                    if (isNegative) {
+                        num := num * 10 - digit;
+                    } else {
+                        num := num * 10 + digit;
+                    };
 
-                let float = if (isNegative) {
-                    num - decimals;
-                } else {
-                    num + decimals;
+                    n_of_decimals += 1;
                 };
 
-                float;
+                let float = Float.fromInt(num) / (10 ** n_of_decimals);
             },
         );
     };
@@ -241,6 +236,12 @@ module JSON {
         ),
         func((n, exponent) : (Float, Int)) : Float {
             let exp = Float.fromInt(exponent);
+            let isNegative = exp < 0;
+
+            if (isNegative) {
+                return n / (10 ** -exp);
+            };
+
             n * (10 ** exp);
         },
     );

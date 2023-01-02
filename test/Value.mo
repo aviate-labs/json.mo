@@ -1,5 +1,3 @@
-import Debug "mo:base-0.7.3/Debug";
-
 import JSON "../src/JSON";
 
 switch (JSON.parse("{ }")) {
@@ -126,7 +124,7 @@ switch (JSON.parse(" 1.234e-4")) {
     case (null) { assert (false) };
     case (?v) {
         switch (v) {
-            case (#Float(0.000_123_400_000_000_000_02)) {};
+            case (#Float(1.234e-4)) {};
             case (_) { assert (false) };
         };
     };

@@ -5,7 +5,6 @@ import Debug "mo:base-0.7.3/Debug";
 assert (JSON.show(#String("hello")) == "\"hello\"");
 assert (JSON.show(#Number(1)) == "1");
 assert (JSON.show(#Number(-1)) == "-1");
-assert (JSON.show(#Number(-1)) == "-1");
 
 assert (JSON.show(#Float(-3.14)) == "-3.14");
 assert (JSON.show(#Float(1.234e-4)) == "0.00");

@@ -23,3 +23,13 @@ Debug.print(JSON.show(#Object([
 ])));
 // {"name": {"firstName": "quint"}, "username": "di-wu"}
 ```
+
+> Note: The `#Float` type only formats to 2 decimal places.
+
+```motoko
+import JSON "mo:json/JSON";
+import Debug "mo:base/Debug";
+
+Debug.print(JSON.show(#Object([("amount", #Float(32.4829))])));
+// {"amount": "32.48"}
+```

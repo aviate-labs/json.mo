@@ -107,3 +107,25 @@ switch (JSON.parse("   null")) { // Test with spaces.
         }
     };
 };
+
+switch (JSON.parse(" 1.23")) {
+    // Test with spaces.
+    case (null) { assert (false) };
+    case (?v) {
+        switch (v) {
+            case (#Float(1.23)) {};
+            case (_) { assert (false) };
+        };
+    };
+};
+
+switch (JSON.parse(" 1.234e-4")) {
+    // Test with spaces.
+    case (null) { assert (false) };
+    case (?v) {
+        switch (v) {
+            case (#Float(1.234e-4)) {};
+            case (_) { assert (false) };
+        };
+    };
+};

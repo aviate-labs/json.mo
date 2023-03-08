@@ -1,6 +1,7 @@
 import Char "mo:base-0.7.3/Char";
 import Iter "mo:base-0.7.3/Iter";
 import Int "mo:base-0.7.3/Int";
+import Float "mo:base-0.7.3/Float";
 import List "mo:base-0.7.3/List";
 import Nat8 "mo:base-0.7.3/Nat8";
 import Nat32 "mo:base-0.7.3/Nat32";
@@ -13,7 +14,8 @@ import P "mo:parser-combinators/Parser";
 
 module JSON {
     public type JSON = {
-        #Number : Int; // TODO: float
+        #Number : Int;
+        #Float : Float;
         #String : Text;
         #Array : [JSON];
         #Object : [(Text, JSON)];
@@ -23,6 +25,7 @@ module JSON {
 
     public func show(json : JSON) : Text = switch (json) {
         case (#Number(v)) { Int.toText(v); };
+        case (#Float(v)) { Float.format(#fix(2), v); };
         case (#String(v)) { "\"" # v # "\""; };
         case (#Array(v)) {
             var s = "[";
@@ -103,6 +106,7 @@ module JSON {
             objectParser(),
             arrayParser(),
             stringParser(),
+            floatParser(),
             numberParser(),
             boolParser(),
             nullParser()
@@ -173,6 +177,73 @@ module JSON {
         func (t : Text) : JSON {
             #String(t);
         }
+    );
+
+    private func floatParser() : P.Parser<Char, JSON> = C.map(
+        C.oneOf([
+            parseFloatWithExp(),
+            parseFloat(),
+        ]),
+        func(n : Float) : JSON = #Float(n),
+    );
+
+    private func parseFloat() : P.Parser<Char, Float> {
+        C.map(
+            C.seq<Char, Int, List.List<Char>>(
+                C.Int.int(),
+                C.right(
+                    C.Character.char('.'),
+                    C.many1(C.Character.digit()),
+                ),
+            ),
+            func((n, decimal_list) : (Int, List.List<Char>)) : Float {
+                let isNegative = n < 0;
+                var num = n;
+                var n_of_decimals : Float = 0;
+
+                for (char in Iter.fromList(decimal_list)) {
+                    let digit = Nat32.toNat(
+                        Char.toNat32(char) - Char.toNat32('0')
+                    );
+
+                    if (isNegative) {
+                        num := num * 10 - digit;
+                    } else {
+                        num := num * 10 + digit;
+                    };
+
+                    n_of_decimals += 1;
+                };
+
+                let float = Float.fromInt(num) / (10 ** n_of_decimals);
+            },
+        );
+    };
+
+    private func parseFloatWithExp() : P.Parser<Char, Float> = C.map(
+        C.seq(
+            C.oneOf([
+                parseFloat(),
+                C.map(
+                    C.Int.int(),
+                    func(i : Int) : Float = Float.fromInt(i),
+                ),
+            ]),
+            C.right(
+                C.oneOf([C.String.string("e"), C.String.string("E")]),
+                C.Int.int(),
+            ),
+        ),
+        func((n, exponent) : (Float, Int)) : Float {
+            let exp = Float.fromInt(exponent);
+            let isNegative = exp < 0;
+
+            if (isNegative) {
+                return n / (10 ** -exp);
+            };
+
+            n * (10 ** exp);
+        },
     );
 
     private func numberParser() : P.Parser<Char, JSON> = C.map(

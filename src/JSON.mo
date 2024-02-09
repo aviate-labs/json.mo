@@ -1,6 +1,7 @@
 import Char "mo:base-0.7.3/Char";
 import Iter "mo:base-0.7.3/Iter";
 import Int "mo:base-0.7.3/Int";
+import Float "mo:base-0.7.3/Float";
 import List "mo:base-0.7.3/List";
 import Nat8 "mo:base-0.7.3/Nat8";
 import Nat32 "mo:base-0.7.3/Nat32";
@@ -13,7 +14,8 @@ import P "mo:parser-combinators/Parser";
 
 module JSON {
     public type JSON = {
-        #Number : Int; // TODO: float
+        #Number : Int;
+        #Float : Float;
         #String : Text;
         #Array : [JSON];
         #Object : [(Text, JSON)];
@@ -23,6 +25,7 @@ module JSON {
 
     public func show(json : JSON) : Text = switch (json) {
         case (#Number(v)) { Int.toText(v); };
+        case (#Float(v)) { Float.toText(v); };
         case (#String(v)) { "\"" # v # "\""; };
         case (#Array(v)) {
             var s = "[";
@@ -103,6 +106,7 @@ module JSON {
             objectParser(),
             arrayParser(),
             stringParser(),
+            floatParser(),
             numberParser(),
             boolParser(),
             nullParser()
@@ -179,6 +183,13 @@ module JSON {
         C.Int.int(),
         func (i : Int) : JSON {
             #Number(i);
+        }
+    );
+
+    private func floatParser() : P.Parser<Char, JSON> = C.map(
+        C.Float.float(),
+        func (i : Float) : JSON {
+            #Float(i);
         }
     );
 

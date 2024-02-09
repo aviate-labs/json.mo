@@ -3,8 +3,8 @@ let Package = { name : Text, version : Text, repo : Text, dependencies : List Te
 
 let additions = [
   { name = "parser-combinators"
-  , repo = "https://github.com/aviate-labs/parser-combinators.mo"
-  , version = "v0.1.2"
+  , repo = "https://github.com/vporton/parser-combinators.mo"
+  , version = "main"
   , dependencies = [ "base-0.7.3" ] : List Text
   }
 ] : List Package
